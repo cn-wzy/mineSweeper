@@ -3,7 +3,9 @@ import MineBlock from '~/components/MineBlock.vue'
 import { isDev, toggleDev } from '~/composables/storage';
 import { GamePlay } from '~/composables/logic'
 const play = new GamePlay(12, 12)
-const state = play.state
+// vueuse传一个ref，保存
+useStorage('vuesweeper-state', play.state)
+const state = computed(()=>play.board)
 
 </script>
 

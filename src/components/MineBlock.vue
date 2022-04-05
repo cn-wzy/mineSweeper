@@ -4,7 +4,7 @@ import { isDev } from '~/composables/storage'
 defineProps<{ block: BlockState }>()
 
 const numberColors = [
-  'text-white-500',
+  'text-transparent',
   'text-blue-500',
   'text-green-500',
   'text-yellow-500',
