@@ -118,7 +118,6 @@ function checkGameState() {
      alert("you win!!!!!")
   }
 }
-
 </script>
 
 <template>
