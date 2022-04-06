@@ -153,7 +153,7 @@ export class GamePlay {
   checkGameState() {
     if (!this.state.value.mineGenerated) return;
     const blocks = this.board.flat();
-    if (blocks.every((block) => block.flagged || block.revealed)) {
+    if (blocks.every((block) => block.flagged || block.revealed || block.mine)) {
       if (blocks.some((block) => block.flagged && !block.mine)) {
         this.state.value.gameState = "lost";
         this.showAllMines();
@@ -162,6 +162,28 @@ export class GamePlay {
         this.state.value.gameState = "won";
         // alert("won");
       }
+    }
+  }
+  autoExpand(block: BlockState) {
+    const sliblings = this.getSiblings(block)
+    const flags = sliblings.reduce((acc, cur) => {
+      return acc + (cur.flagged ? 1 : 0)
+    }, 0)
+    const notRevealed = sliblings.reduce((acc, cur) => {
+      return acc + (!cur.revealed && !block.flagged ? 1 : 0)
+    }, 0)
+    if (flags === block.adajacentMine) {
+      sliblings.forEach((s) => {
+        s.revealed = true
+      })
+    }
+    const missingFlags = block.adajacentMine - flags
+    if (notRevealed === missingFlags) {
+      sliblings.forEach(i => {
+        if (!i.revealed && !i.flagged) {
+          i.flagged = true
+        }
+      })
     }
   }
 }

@@ -3,10 +3,9 @@
 // import Confetti from '~/components/Confetti.vue'
 import { isDev, toggleDev } from '~/composables/storage';
 import { GamePlay } from '~/composables/logic'
-import { stat } from 'fs';
 const play = new GamePlay(6, 6, 3)
 // vueuse传一个ref，保存
-const start = new Date()
+let start = new Date()
 const now = $(useNow())
 // vueuse里的东西
 const timerMs = $computed(() => Math.round((+now - +start) / 1000))
@@ -17,12 +16,15 @@ function newGame(difficuty: 'ez' | 'middle' | 'hard') {
   switch (difficuty) {
     case 'ez':
       play.reset(9, 9, 10)
+      start = new Date()
       break;
     case 'middle':
       play.reset(16, 16, 40)
+      start = new Date()
       break;
     case 'hard':
       play.reset(20, 20, 99)
+      start = new Date()
       break;
 
     default:
@@ -61,6 +63,7 @@ watchEffect(() => {
           :block="block"
           @click="play.onClick(block)"
           @contextmenu.prevent="play.onRightClick(block)"
+          @dblclick="play.autoExpand(block)"
         />
       </div>
     </div>

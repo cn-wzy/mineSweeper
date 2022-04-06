@@ -27,8 +27,8 @@ function getBlockClass(block: BlockState) {
   <button
     :class="getBlockClass(block)"
     border="0.5 gray-400/30"
-    min-w-8
-    min-h-8
+    w-8
+    h-8
     flex="~"
     items-center
     justify-center
