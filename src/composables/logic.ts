@@ -152,7 +152,7 @@ export class GamePlay {
         alert("lost");
       } else {
         this.state.value.gameState = "won";
-        alert("won");
+        // alert("won");
       }
     }
   }
