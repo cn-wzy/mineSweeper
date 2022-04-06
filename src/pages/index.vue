@@ -3,10 +3,32 @@
 // import Confetti from '~/components/Confetti.vue'
 import { isDev, toggleDev } from '~/composables/storage';
 import { GamePlay } from '~/composables/logic'
+import { stat } from 'fs';
 const play = new GamePlay(6, 6, 3)
 // vueuse传一个ref，保存
+const start = new Date()
+const now = $(useNow())
+// vueuse里的东西
+const timerMs = $computed(() => Math.round((+now - +start) / 1000))
+
 useStorage('vuesweeper-state', play.state)
-const state = computed(() => play.board)
+const state = $computed(() => play.board)
+function newGame(difficuty: 'ez' | 'middle' | 'hard') {
+  switch (difficuty) {
+    case 'ez':
+      play.reset(9, 9, 10)
+      break;
+    case 'middle':
+      play.reset(16, 16, 40)
+      break;
+    case 'hard':
+      play.reset(20, 20, 99)
+      break;
+
+    default:
+      break;
+  }
+}
 watchEffect(() => {
   play.checkGameState()
 })
@@ -15,6 +37,22 @@ watchEffect(() => {
 <template>
   <div text-center>
     MineSweeper
+    <div flex="~ gap-1" justify-center>
+      <button btn @click="newGame('ez')">Easy</button>
+      <button btn @click="newGame('middle')">Middle</button>
+      <button btn @click="newGame('hard')">Hard</button>
+    </div>
+    <div flex justify-center>
+      <div font-mono text-2xl flex="~ gap-1" items-center>
+        <div i-carbon-timer></div>
+        {{ timerMs }}
+      </div>
+      <div font-mono text-2xl flex="~ gap-1" items-center>
+        <div i-mdi:mine></div>
+        {{ play.blocks.reduce((acc, block) => acc + (block.mine ? 1 : 0) - (block.flagged ? 1 : 0), 0) }}
+      </div>
+    </div>
+
     <div p5 w-full overflow-auto>
       <div w-max ma v-for="row, y in state" :key="y" flex="~" items-center justify-center>
         <MineBlock
@@ -26,15 +64,10 @@ watchEffect(() => {
         />
       </div>
     </div>
-
-    <div>
-      {{play.blocks.reduce((acc, block) => acc + ((!block.revealed && block.mine) ? 1 : 0), 0)}}
-    </div>
-
     <div flex="~ gap-1" justify-center>
       <button btn @click="toggleDev()">{{ isDev ? 'DEV' : 'NORMAL' }}</button>
-      <button btn @click="play.reset()">Reset</button>
     </div>
-    <Confetti :passed="play.state.value.gameState === 'won'"/>
+
+    <Confetti :passed="play.state.value.gameState === 'won'" />
   </div>
 </template>

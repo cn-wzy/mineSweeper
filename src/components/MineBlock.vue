@@ -26,13 +26,13 @@ function getBlockClass(block: BlockState) {
 <template>
   <button
     :class="getBlockClass(block)"
-    border="1 gray-400/30"
-    min-w-10
-    min-h-10
+    border="0.5 gray-400/30"
+    min-w-8
+    min-h-8
     flex="~"
     items-center
     justify-center
-    m="0.5"
+    m="1px"
   >
     <template v-if="block.flagged">
       <div i-mdi:flag text-red></div>
