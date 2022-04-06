@@ -149,15 +149,20 @@ export class GamePlay {
     this.board.flat().forEach((i) => {
       if (i.mine) i.revealed = true;
     });
+    setTimeout(() => {
+      alert("lost");
+    },200);
   }
   checkGameState() {
     if (!this.state.value.mineGenerated) return;
     const blocks = this.board.flat();
-    if (blocks.every((block) => block.flagged || block.revealed || block.mine)) {
+    if (
+      blocks.every((block) => block.flagged || block.revealed || block.mine)
+    ) {
       if (blocks.some((block) => block.flagged && !block.mine)) {
         this.state.value.gameState = "lost";
+        // alert("lost");
         this.showAllMines();
-        alert("lost");
       } else {
         this.state.value.gameState = "won";
         // alert("won");
@@ -165,25 +170,25 @@ export class GamePlay {
     }
   }
   autoExpand(block: BlockState) {
-    const sliblings = this.getSiblings(block)
+    const sliblings = this.getSiblings(block);
     const flags = sliblings.reduce((acc, cur) => {
-      return acc + (cur.flagged ? 1 : 0)
-    }, 0)
+      return acc + (cur.flagged ? 1 : 0);
+    }, 0);
     const notRevealed = sliblings.reduce((acc, cur) => {
-      return acc + (!cur.revealed && !block.flagged ? 1 : 0)
-    }, 0)
+      return acc + (!cur.revealed && !block.flagged ? 1 : 0);
+    }, 0);
     if (flags === block.adajacentMine) {
       sliblings.forEach((s) => {
-        s.revealed = true
-      })
+        s.revealed = true;
+      });
     }
-    const missingFlags = block.adajacentMine - flags
+    const missingFlags = block.adajacentMine - flags;
     if (notRevealed === missingFlags) {
-      sliblings.forEach(i => {
+      sliblings.forEach((i) => {
         if (!i.revealed && !i.flagged) {
-          i.flagged = true
+          i.flagged = true;
         }
-      })
+      });
     }
   }
 }
