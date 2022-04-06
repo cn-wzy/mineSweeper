@@ -2,11 +2,13 @@
 import MineBlock from '~/components/MineBlock.vue'
 import { isDev, toggleDev } from '~/composables/storage';
 import { GamePlay } from '~/composables/logic'
-const play = new GamePlay(12, 12)
+const play = new GamePlay(12, 12, 10)
 // vueuse传一个ref，保存
 useStorage('vuesweeper-state', play.state)
-const state = computed(()=>play.board)
-
+const state = computed(() => play.board)
+watchEffect(() => {
+  play.checkGameState()
+})
 </script>
 
 <template>
@@ -22,10 +24,15 @@ const state = computed(()=>play.board)
           @contextmenu.prevent="play.onRightClick(block)"
         />
       </div>
-      <div flex="~ gap-1" justify-center>
-        <button btn @click="toggleDev()">{{ isDev ? 'DEV' : 'NORMAL' }}</button>
-        <button btn @click="play.reset()">Reset</button>
-      </div>
+    </div>
+
+    <div>
+      {{play.blocks.reduce((acc, block) => acc + ((!block.revealed && block.mine) ? 1 : 0), 0)}}
+    </div>
+
+    <div flex="~ gap-1" justify-center>
+      <button btn @click="toggleDev()">{{ isDev ? 'DEV' : 'NORMAL' }}</button>
+      <button btn @click="play.reset()">Reset</button>
     </div>
   </div>
 </template>
